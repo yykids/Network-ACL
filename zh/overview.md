@@ -46,5 +46,6 @@ Network ACL 기능을 이용하려면 다음 사항을 설정해야 합니다.
 
 > [참고]
 >* Network와 ACL 동작
+> * Network를 삭제하면 ACL binding이 삭제됩니다. ACL은 삭제되지 않습니다.
 > * ACL에 binding 된 network이 있으면 ACL을 삭제할 수 없습니다.
 > * ACL rule을 추가하거나 삭제하면 binding 된 모든 network에 해당 내역이 반영됩니다.
