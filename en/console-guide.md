@@ -55,6 +55,13 @@ ACL Rule을 추가하면, 이 ACL을 사용하는 모든 네트워크에 추가�
 > "protocol"="tcp", "src cidr"="192.168.0.20/32", "src_port_range_min"=80, "dst cidr"="133.186.0.10/32", "policy"="allow"
 > "protocol"="tcp", "src cidr"="192.168.0.10/32", "dst cidr"="133.186.237.20/32", "dst_port_range_min"=80, "policy"="allow"
 > "protocol"="tcp", "src cidr"="133.186.237.20/32", "src_port_range_min"=80, "dst cidr"="192.168.0.10/32", "policy"="allow"
+>
+> 다른 VPC로부터의 접근일 경우
+>
+> 133.186.237.30(VPC1)로부터 192.168.0.40(fip:133.186.237.40, VPC2)으로 80번 접속을 허용하려면
+> VPC2와 바인딩된 ACL Rule에 다음과 같이 설정하면 됩니다. (VPC1은 ACL Rule 설정없음)
+> "protocol"="tcp", "src cidr"="133.186.237.30/32", "dst cidr"="192.168.0.40/32", "dst_port_range_min"=80, "policy"="allow"
+> "protocol"="tcp", "src cidr"="192.168.0.40/32", "src_port_range_min"=80, "dst cidr"="133.186.237.30/32", "policy"="allow"
 
 > [참고] ACL Rule order
 >
