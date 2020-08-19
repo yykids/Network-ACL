@@ -33,17 +33,28 @@ ACL rule을 추가하면, 이 ACL을 사용하는 모든 network에 추가된 ru
 
 [확인]을 누르면 ACL rule이 생성됩니다.
 
-> [참고] src와 dst 주소
->
-> 예를 들어 TOAST instance에서 fixed ip 192.168.0.10 에 floating ip 133.186.237.48 을 연결한 경우 ACL rule에서는 fixed ip 192.168.0.10을 주소로 사용해야 합니다.
-> 외부의 public ip는 그대로 사용하면 됩니다.
-
 > [참고] src와 dst 짝으로 설정하기
 >
 > 예를 들어 192.168.0.10 주소에서만 192.168.0.13 주소의 tcp 22번으로 접속하는 것을 허용해 주려면 아래와 같이 룰 추가를 해주면 됩니다.
 > "protocol"="tcp", "src cidr"="192.168.0.10/32", "dst cidr"="192.168.0.13/32", "dst_port_range_min"=22, "policy"="allow"
 > "protocol"="tcp", "src cidr"="192.168.0.13/32", "src_port_range_min"=22, "dst cidr"="192.168.0.10/32", "policy"="allow"
 > 해당 주소로 패킷이 들어왔다가 나가야 하는데, 첫 번째 룰만 있을 경우 해당 인스턴스 입장에서 보면 dst는 들어오는 것만 허용해 주는 것이고, 두 번째 룰이 있어야 src로부터 나가는 것이 허용되기 때문입니다.
+
+> [참고] src와 dst 주소
+>
+> 예를 들어 TOAST instance에서 fixed ip 192.168.0.10 에 floating ip 133.186.237.10을 연결한 경우, 같은 VPC에서의 접근이 목적인 경우 
+> ACL rule은 fixed ip 192.168.0.10을 주소로 설정하는 것이 편리합니다.
+> 192.168.0.10 (fip:133.186.237.10)과  192.168.0.20(fip:133.186.237.20) 두개의 instance간에 10번에서 20번으로 80번 포트 접속을 허용하는 rule을 설정한다고 가정하면
+> fixed ip로 세팅할 경우
+> "protocol"="tcp", "src cidr"="192.168.0.10/32", "dst cidr"="192.168.0.20/32", "dst_port_range_min"=80, "policy"="allow"
+> "protocol"="tcp", "src cidr"="192.168.0.20/32", "src_port_range_min"=80, "dst cidr"="192.168.0.10/32", "policy"="allow"
+> 세팅만 해주고, 192.168.0.10에서 curl http://192.168.0.20 처럼 fixedip로 접근을 하면 됩니다.
+> floating ip로 세팅할 경우
+> "protocol"="tcp", "src cidr"="133.186.237.10/32", "dst cidr"="192.168.0.20/32", "dst_port_range_min"=80, "policy"="allow"
+> "protocol"="tcp", "src cidr"="192.168.0.20/32", "src_port_range_min"=80, "dst cidr"="133.186.0.10/32", "policy"="allow"
+> "protocol"="tcp", "src cidr"="192.168.0.10/32", "dst cidr"="133.186.237.20/32", "dst_port_range_min"=80, "policy"="allow"
+> "protocol"="tcp", "src cidr"="133.186.237.20/32", "src_port_range_min"=80, "dst cidr"="192.168.0.10/32", "policy"="allow"
+> 와 같이 설정을 하고 133.186.237.10에서 curl http://133.186.237.20 처럼 floating ip로 접근을 하면 됩니다.
 
 > [참고] ACL Rule order
 >
